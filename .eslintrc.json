@@ -1,3 +1,59 @@
 {
-  "extends": "next/core-web-vitals"
+    "extends": [
+        "next/core-web-vitals",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "airbnb",
+        "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "overrides": [
+        {
+            "files": [
+                "*.ts",
+                "*.tsx"
+            ],
+            "parserOptions": {
+                "project": [
+                    "./tsconfig.json"
+                ]
+            }
+        }
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "no-use-before-define": "off",
+        "quote-props": ["error", "as-needed"],
+        "semi": "error",
+        "quotes": ["warn", "double"],
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx",".ts",".tsx"] }],
+        "react/require-default-props": "off",
+        "new-cap": "warn",
+        "import/prefer-default-export": "warn",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+              "js": "never",
+              "jsx": "never",
+              "ts": "never",
+              "tsx": "never"
+            }
+         ],
+        "max-len": ["warn", { "code": 100, "ignoreStrings": true, "ignoreComments": true }],
+        "no-console": "off",
+        "react/no-unused-prop-types": "warn",
+        "react/no-unstable-nested-components": "warn",
+        "no-shadow": "warn",
+        "camelcase": "off" //since we use supabase and it uses snake_case   
+
+    }
 }

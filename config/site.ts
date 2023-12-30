@@ -1,29 +1,34 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-	name: "Next.js + NextUI",
+	name: "Wealthfolio",
 	description: "Make beautiful websites regardless of your design experience.",
 	navItems: [
 		{
 			label: "Home",
 			href: "/",
 		},
-    {
-      label: "Docs",
-      href: "/docs",
+		 {
+      label: "Overview",
+      href: "/overview",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Assets",
+      href: "/assets",
     },
-    {
-      label: "Blog",
-      href: "/blog",
+	{
+      label: "Accounts",
+      href: "/accounts",
     },
-    {
-      label: "About",
-      href: "/about",
-    }
+	 {
+      label: "Transactions",
+      href: "/transactions",
+    },
+	 {
+      label: "Settings",
+      href: "/settings",
+    },
+ 
 	],
 	navMenuItems: [
 		{
@@ -60,10 +65,7 @@ export const siteConfig = {
 		},
 	],
 	links: {
-		github: "https://github.com/nextui-org/nextui",
-		twitter: "https://twitter.com/getnextui",
-		docs: "https://nextui.org",
-		discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev"
+		github: "https://github.com/Marilok/Wealthfolio",
+    sponsor: "https://github.com/Marilok/Wealthfolio"
 	},
 };
