@@ -1,6 +1,4 @@
-  <h1 align="center">umbrelOS</h1>
-  Wealthfolio
-  </h1>
+  <h1 align="center">Wealthfolio</h1>
   <p align="center">
     A minimalistic open-source personal wealth manager
   </p>
