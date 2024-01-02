@@ -11,6 +11,7 @@ export async function getCurrentPrice({ symbol }: { symbol: string }) {
   };
 
   try {
+    //@ts-expect-error
     const response = await fetch(url, options);
     const result = await response.json();
     return result.regularMarketPrice.raw;

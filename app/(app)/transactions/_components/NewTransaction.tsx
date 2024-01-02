@@ -1,6 +1,8 @@
+"use client";
 import {
   Avatar,
   Button,
+  Checkbox,
   Input,
   Modal,
   ModalBody,
@@ -13,20 +15,42 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCoin, IconPlus, IconShoppingCart } from "@tabler/icons-react";
-import { accounts } from "../../../data";
+import { useRouter } from "next/navigation";
+import { createTransaction } from "../_functions/createTransaction";
 
-export default function NewTransaction() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export default function NewTransaction({ accounts = [] }: { accounts: any[] }) {
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const router = useRouter();
 
   async function createNewTransaction(formData: FormData) {
-    // "use server";
-    // const rawFormData = {
-    //   customerId: formData.get("customerId"),
-    //   amount: formData.get("amount"),
-    //   status: formData.get("status"),
-    // };
-    // // mutate data
-    // // revalidate cache
+    const symbol = formData.get("symbol") as string;
+    const type = formData.get("type") as string;
+    const quantity = Number(formData.get("quantity") as string);
+    const unit_price = Number(formData.get("unit_price") as string);
+    const fee = Number(formData.get("fee") as string);
+    const currency = formData.get("currency") as string;
+    const date = formData.get("date") as string;
+    const account_id = Number(formData.get("account_id") as string);
+    const notes = formData.get("notes") as string;
+    try {
+      await createTransaction(
+        symbol,
+        type,
+        quantity,
+        unit_price,
+        fee,
+        currency,
+        date,
+        account_id,
+        notes,
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      onClose();
+      router.refresh();
+    }
   }
 
   return (
@@ -50,9 +74,9 @@ export default function NewTransaction() {
                 </ModalHeader>
                 <ModalBody>
                   <div className="flex flex-col gap-4 w-full">
-                    <Select isRequired label="Transaction type">
+                    <Select isRequired label="What did I do?" name="type">
                       <SelectItem
-                        key="buy"
+                        key="BUY"
                         startContent={
                           <Avatar
                             alt="Buy icon"
@@ -64,7 +88,7 @@ export default function NewTransaction() {
                         Buy
                       </SelectItem>
                       <SelectItem
-                        key="sell"
+                        key="SELL"
                         startContent={
                           <Avatar
                             alt="Sell icon"
@@ -76,19 +100,44 @@ export default function NewTransaction() {
                         Sell
                       </SelectItem>
                     </Select>
-                    <Select isRequired label="Account">
+                    <Select
+                      isRequired
+                      label="On which account?"
+                      name="account_id"
+                    >
                       {accounts.map((account) => (
-                        <SelectItem key={account.id}>{account.name}</SelectItem>
+                        <SelectItem key={account.id} value={account.id}>
+                          {account.name}
+                        </SelectItem>
                       ))}
                     </Select>
-                    <Input label="Asset" isRequired />
-                    <Input label="Quantity" type="number" isRequired />
+                    <Checkbox isDisabled name="isRecurring" defaultSelected>
+                      Update cash balance on this account?
+                    </Checkbox>
+                    <Input
+                      label="Ticker/ISIN..."
+                      isRequired
+                      autoFocus
+                      name="symbol"
+                    />
+                    <Input
+                      label="Quantity"
+                      type="number"
+                      isRequired
+                      name="quantity"
+                    />
                     <div className="flex flex-row gap-2">
-                      <Input label="Unit price" type="number" isRequired />
+                      <Input
+                        label="Unit price"
+                        type="number"
+                        isRequired
+                        name="unit_price"
+                      />
                       <Select
                         className="w-40"
                         isRequired
                         defaultSelectedKeys={["CZK"]}
+                        name="currency"
                       >
                         <SelectItem
                           key="CZK"
@@ -131,8 +180,8 @@ export default function NewTransaction() {
                         </SelectItem>
                       </Select>
                     </div>
-
-                    <Input label="Date" isRequired type="date" />
+                    <Input label="Fee" type="number" isRequired name="fee" />
+                    <Input label="When?" isRequired type="date" name="date" />
                     <Textarea label="Notes" name="notes" />
                   </div>
                 </ModalBody>

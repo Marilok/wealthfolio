@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="Vrstva_1" data-name="Vrstva 1" viewBox="0 0 105.514 109.6488">
+    <g id="logoMark">
+        <path id="logoMark_CompoundPathItem_" data-name="logoMark &lt;CompoundPathItem&gt;"
+            d="M52.7571,51.04l48.7568,28.15L52.7571,107.34,4,79.1894,52.7571,51.04m0-2.3094L0,79.1894l52.7571,30.4594,52.7568-30.4594L52.7571,48.73Z"
+            style="fill: #14c850" />
+        <polygon id="logoMark_PathItem_" data-name="logoMark &lt;PathItem&gt;"
+            points="105.514 30.459 52.757 60.919 0 30.459 52.757 0 105.514 30.459" style="fill: #14c850" />
+        <polygon id="logoMark_PathItem_2" data-name="logoMark &lt;PathItem&gt;"
+            points="52.757 60.919 52.757 85.284 0 54.824 0 30.459 52.757 60.919" style="fill: #00a03c" />
+        <polygon id="logoMark_PathItem_3" data-name="logoMark &lt;PathItem&gt;"
+            points="52.757 60.919 52.757 85.284 105.514 54.824 105.514 30.459 52.757 60.919" style="fill: #008c32" />
+    </g>
+    <div xmlns="" id="divScriptsUsed" style="display: none" />
+    <script xmlns="" id="globalVarsDetection" src="chrome-extension://cmkdbmfndkfgebldhnkbfhlneefdaaip/js/wrs_env.js" />
+    <script xmlns="" />
+</svg>

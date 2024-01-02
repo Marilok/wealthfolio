@@ -13,20 +13,29 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconPlus } from "@tabler/icons-react";
-import { platforms } from "../../../data";
+import { useRouter } from "next/navigation";
+import { createAccount } from "../_functions/createAccount";
 
-export default function NewAccount() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export default function NewAccount({ platforms }: { platforms: any[] }) {
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  async function createNewTransaction(formData: FormData) {
-    // "use server";
-    // const rawFormData = {
-    //   customerId: formData.get("customerId"),
-    //   amount: formData.get("amount"),
-    //   status: formData.get("status"),
-    // };
-    // // mutate data
-    // // revalidate cache
+  const router = useRouter();
+
+  async function onSubmit(formData: FormData) {
+    isOpen == false ? onOpen() : onOpenChange();
+    const name = formData.get("name") as string;
+    const platform_id = Number(formData.get("platformId"));
+    const notes = formData.get("notes") as string;
+    const balance = parseInt(formData.get("cashBalance") as string, 10);
+    const currency = formData.get("currency") as string;
+    try {
+      await createAccount(name, platform_id, balance, currency, notes);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      onClose();
+      router.refresh();
+    }
   }
 
   return (
@@ -44,14 +53,14 @@ export default function NewAccount() {
         <ModalContent>
           {(onClose) => (
             <>
-              <form action={createNewTransaction}>
+              <form action={onSubmit}>
                 <ModalHeader className="flex flex-col gap-1">
-                  Create a new investment account
+                  Create a new account
                 </ModalHeader>
                 <ModalBody>
                   <div className="flex flex-col gap-4 w-full">
-                    <Input label="Name" name="name" isRequired />
-                    <Select label="Platform">
+                    <Input label="Nickname" name="name" isRequired autoFocus />
+                    <Select label="Platform" name="platformId" isRequired>
                       {platforms.map((platform) => (
                         <SelectItem
                           key={platform.id}
@@ -80,6 +89,8 @@ export default function NewAccount() {
                         className="w-40"
                         isRequired
                         defaultSelectedKeys={["CZK"]}
+                        name="currency"
+                        label="Currency"
                       >
                         <SelectItem
                           key="CZK"

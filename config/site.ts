@@ -4,11 +4,7 @@ export const siteConfig = {
 	name: "Wealthfolio",
 	description: "Make beautiful websites regardless of your design experience.",
 	navItems: [
-		{
-			label: "Home",
-			href: "/",
-		},
-		 {
+	{
       label: "Overview",
       href: "/overview",
     },
@@ -26,7 +22,7 @@ export const siteConfig = {
     },
 	 {
       label: "Settings",
-      href: "/settings",
+      href: "settings",
     },
  
 	],

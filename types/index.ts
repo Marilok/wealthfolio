@@ -7,10 +7,17 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 export interface Asset {
   name: string;
-  value?: number;
-  currency: string;
-  quantity: number;
   symbol: string;
+  currency: string;
+  purchasePrice: number;
+  quantity: number;
+}
+
+export interface AssetWithMarketData extends Asset {
+  currentPrice: number;
+  perfomancePercentage: number;
+  portfolioShare: number;
+  currentValue: number;
 }
 
 export interface Transaction {
@@ -25,4 +32,20 @@ export interface Transaction {
     notes?: string;
     symbol: string;
     id: number;
+  }
+
+  export interface Platform {
+	name: string;
+	id: number;
+	url: string;
+	icon: string;
+  }
+  
+  export interface Account {
+	name: string;
+	balances: {currency: "CZK" | "USD" | "EUR", balance: number}[];
+	notes?: string;
+	id: number;
+	platformId?: number;
+	customUrl?: string;
   }
