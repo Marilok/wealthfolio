@@ -33,7 +33,7 @@ export default function UI({
     <>
       <h1 className={title()}>Transactions</h1>
       <NewTransaction accounts={accounts} />
-      <Table isStriped selectionMode="single" color="primary">
+      <Table selectionMode="single" isStriped color="primary">
         <TableHeader>
           <TableColumn>ASSET NAME</TableColumn>
           <TableColumn>TYPE</TableColumn>

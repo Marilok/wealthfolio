@@ -71,6 +71,11 @@ export const Navbar = () => {
             Sponsor
           </Button>
         </NavbarItem>
+        <NavbarItem className="hidden md:flex">
+          <NextLink href="/app/assets">
+            <Button color="primary">My Portfolio</Button>
+          </NextLink>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

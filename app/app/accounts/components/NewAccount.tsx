@@ -68,8 +68,9 @@ export default function NewAccount({ platforms }: { platforms: any[] }) {
                           startContent={
                             <Avatar
                               alt={platform.name}
-                              src={platform.icon}
-                              classNames={{ img: "object-contain" }}
+                              src={`${process.env.NEXT_PUBLIC_URL}/images/platforms/${platform.icon}`}
+                              classNames={{ img: "object-scale-down" }}
+                              radius="sm"
                             />
                           }
                         >
@@ -79,7 +80,7 @@ export default function NewAccount({ platforms }: { platforms: any[] }) {
                     </Select>
                     <div className="flex flex-row gap-2">
                       <Input
-                        label="Current cash balance"
+                        label="Initial cash balance"
                         type="number"
                         isRequired
                         defaultValue="0"

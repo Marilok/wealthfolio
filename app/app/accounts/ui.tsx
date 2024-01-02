@@ -25,7 +25,7 @@ export default function UI({
     <>
       <h1 className={title()}>Accounts</h1>
       <NewAccount platforms={platforms} />
-      <Table isStriped selectionMode="single" color="primary">
+      <Table selectionMode="single" isStriped color="primary">
         <TableHeader>
           <TableColumn>ACCOUNT NICKNAME</TableColumn>
           <TableColumn>PLATFORM</TableColumn>
@@ -42,9 +42,10 @@ export default function UI({
                 {row.platform_id ? (
                   <div className="flex flex-row gap-2">
                     <Avatar
-                      src={row.platform_id?.icon}
+                      src={`${process.env.NEXT_PUBLIC_URL}/images/platforms/${row.platform_id.icon}`}
                       alt={row.platform_id?.name}
                       size="sm"
+                      radius="sm"
                       classNames={{
                         img: "object-contain",
                       }}

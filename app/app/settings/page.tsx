@@ -10,7 +10,9 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
+import { createBrowserClient } from "@supabase/ssr";
 import { IconMoon, IconSun, IconWand } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const languages = [
@@ -38,6 +40,13 @@ export default function Page() {
       icon: "https://flagcdn.com/gb.svg",
     },
   ];
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+
+  const router = useRouter();
 
   return (
     <>
@@ -127,7 +136,16 @@ export default function Page() {
         </div>
         <div className="flex flex-col items-start justify-center gap-2 w-full">
           <h2 className={subtitle()}>Account</h2>
-
+          <Button
+            variant="bordered"
+            fullWidth
+            onPress={async () => {
+              await supabase.auth.signOut();
+              router.push("/");
+            }}
+          >
+            Signout
+          </Button>
           <Button color="danger" variant="bordered" fullWidth>
             Delete account
           </Button>

@@ -2,6 +2,7 @@
 
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { updateAsset } from "./updateAsset";
 
 export async function createTransaction(
   symbol: string,
@@ -29,6 +30,12 @@ export async function createTransaction(
       notes,
     },
   ]);
+
+  try {
+    await updateAsset(symbol, quantity, currency, unit_price);
+  } catch (error) {
+    throw error;
+  }
 
   if (error) {
     throw error;

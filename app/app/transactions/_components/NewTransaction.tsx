@@ -14,7 +14,12 @@ import {
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
-import { IconCoin, IconPlus, IconShoppingCart } from "@tabler/icons-react";
+import {
+  IconCoin,
+  IconCoins,
+  IconPlus,
+  IconShoppingCart,
+} from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { createTransaction } from "../_functions/createTransaction";
 
@@ -98,6 +103,18 @@ export default function NewTransaction({ accounts = [] }: { accounts: any[] }) {
                         }
                       >
                         Sell
+                      </SelectItem>
+                      <SelectItem
+                        key="INTEREST"
+                        startContent={
+                          <Avatar
+                            alt="Sell icon"
+                            icon={<IconCoins />}
+                            color="warning"
+                          />
+                        }
+                      >
+                        Receive interest
                       </SelectItem>
                     </Select>
                     <Select

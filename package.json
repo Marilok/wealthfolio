@@ -24,6 +24,7 @@
     "@react-aria/visually-hidden": "^3.8.6",
     "@react-stately/data": "^3.11.0",
     "@supabase/auth-helpers-nextjs": "^0.8.7",
+    "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.1",
     "@tabler/icons-react": "^2.44.0",
     "@types/node": "20.5.7",
