@@ -24,7 +24,3 @@
 ## Setup
   1. Run `npm install`
   2. Start the app `npm run dev`
-
-## License
-
-Licensed under the
