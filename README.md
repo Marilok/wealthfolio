@@ -1,8 +1,9 @@
-# Next.js & NextUI Template
+  <h1 align="center">Wealthfolio</h1>
+  <p align="center">
+    A minimalistic open-source personal wealth manager
+  </p>
 
-This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2).
-
-## Technologies Used
+# Technology stack
 
 - [Next.js 13](https://nextjs.org/docs/getting-started)
 - [NextUI v2](https://nextui.org/)
@@ -12,29 +13,16 @@ This is a template for creating applications using Next.js 13 (app directory) an
 - [Framer Motion](https://www.framer.com/motion/)
 - [next-themes](https://github.com/pacocoursey/next-themes)
 
-## How to Use
+# Development
 
+## Prerequisites
+  - Node.js (version 18+)
+  - Env variables
 
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Run the development server
-
-```bash
-npm run dev
-```
+## Setup
+  1. Run `npm install`
+  2. Start the app `npm run dev`
 
 ## License
 
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+Licensed under the
