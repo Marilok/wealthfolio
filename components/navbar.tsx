@@ -21,7 +21,7 @@ import { GithubIcon, HeartFilledIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 
 import { Logo } from "@/components/icons";
-import { IconChartPie } from "@tabler/icons-react";
+import { IconChartPie, IconSettings } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
@@ -29,7 +29,7 @@ export const Navbar = () => {
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky" isBordered>
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+      <NavbarContent className="basis-1/5 sm:basis-full" justify="between">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
@@ -64,7 +64,7 @@ export const Navbar = () => {
           <Link isExternal href={siteConfig.links.github} aria-label="Github">
             <GithubIcon className="text-default-500" />
           </Link>
-          <ThemeSwitch />
+          {!isInApp && <ThemeSwitch />}
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
           <Button
@@ -78,13 +78,23 @@ export const Navbar = () => {
             Sponsor
           </Button>
         </NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <NextLink href="/app/assets">
-            <Button color="primary" startContent={<IconChartPie />}>
-              My Portfolio
-            </Button>
-          </NextLink>
-        </NavbarItem>
+        {(!isInApp && (
+          <NavbarItem className="hidden md:flex">
+            <NextLink href="/app/assets">
+              <Button color="primary" startContent={<IconChartPie />}>
+                My Portfolio
+              </Button>
+            </NextLink>
+          </NavbarItem>
+        )) || (
+          <NavbarItem className="hidden md:flex">
+            <NextLink href="settings">
+              <Button color="default" isIconOnly>
+                <IconSettings />
+              </Button>
+            </NextLink>
+          </NavbarItem>
+        )}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

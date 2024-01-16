@@ -1,6 +1,7 @@
 import { GithubIcon } from "@/components/icons";
 import { subtitle, title } from "@/components/primitives";
 import { siteConfig } from "@/config/site";
+import { Database } from "@/types/supabase";
 import { Link } from "@nextui-org/link";
 import {
   Avatar,
@@ -12,9 +13,31 @@ import {
   Divider,
 } from "@nextui-org/react";
 import { button as buttonStyles } from "@nextui-org/theme";
+import { createServerClient } from "@supabase/ssr";
 import { IconCheck, IconRocket, IconX } from "@tabler/icons-react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Page() {
+  const cookieStore = cookies();
+
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    },
+  );
+  const userMail = (await supabase.auth.getSession()).data.session?.user.email;
+
+  if (userMail) {
+    redirect("/app/assets");
+  }
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-2xl justify-center">

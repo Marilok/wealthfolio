@@ -42,9 +42,8 @@ export default function NewAccount({
     } catch (error) {
       console.error(error);
     } finally {
-      onClose();
       list.reload();
-      router.refresh();
+      onClose();
     }
   }
 
