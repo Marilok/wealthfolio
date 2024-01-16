@@ -1,13 +1,14 @@
 "use client";
 
 import { title } from "@/components/primitives";
+import { Database } from "@/types/supabase";
 import { Button } from "@nextui-org/button";
 import { createBrowserClient } from "@supabase/ssr";
 import { IconBrandGithub } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const supabase = createBrowserClient(
+  const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
@@ -18,7 +19,7 @@ export default function Page() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "http://localhost:3000/app/assets",
+        redirectTo: `${process.env.NEXT_PUBLIC_URL}/auth/callback`,
       },
     });
   };

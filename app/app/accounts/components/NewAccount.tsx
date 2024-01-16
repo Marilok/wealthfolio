@@ -1,3 +1,6 @@
+import { currencies } from "@/data/currencies";
+import { defaultCurrency } from "@/data/settings";
+import { Currency } from "@/types";
 import {
   Avatar,
   Button,
@@ -16,7 +19,13 @@ import { IconPlus } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { createAccount } from "../_functions/createAccount";
 
-export default function NewAccount({ platforms }: { platforms: any[] }) {
+export default function NewAccount({
+  platforms,
+  list,
+}: {
+  platforms: any[];
+  list: any;
+}) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const router = useRouter();
@@ -27,13 +36,14 @@ export default function NewAccount({ platforms }: { platforms: any[] }) {
     const platform_id = Number(formData.get("platformId"));
     const notes = formData.get("notes") as string;
     const balance = parseInt(formData.get("cashBalance") as string, 10);
-    const currency = formData.get("currency") as string;
+    const currency = formData.get("currency") as Currency;
     try {
       await createAccount(name, platform_id, balance, currency, notes);
     } catch (error) {
       console.error(error);
     } finally {
       onClose();
+      list.reload();
       router.refresh();
     }
   }
@@ -44,18 +54,23 @@ export default function NewAccount({ platforms }: { platforms: any[] }) {
         onPress={onOpen}
         endContent={<IconPlus />}
         color="primary"
-        className="absolute m-12 bottom-0 right-0"
+        className="fixed m-12 bottom-0 right-0 z-50"
         size="lg"
       >
-        Create new account
+        Create account
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        backdrop="blur"
+        scrollBehavior="outside"
+      >
         <ModalContent>
           {(onClose) => (
             <>
               <form action={onSubmit}>
                 <ModalHeader className="flex flex-col gap-1">
-                  Create a new account
+                  Create account
                 </ModalHeader>
                 <ModalBody>
                   <div className="flex flex-col gap-4 w-full">
@@ -89,49 +104,42 @@ export default function NewAccount({ platforms }: { platforms: any[] }) {
                       <Select
                         className="w-40"
                         isRequired
-                        defaultSelectedKeys={["CZK"]}
+                        defaultSelectedKeys={[defaultCurrency]}
                         name="currency"
-                        label="Currency"
+                        items={currencies}
+                        renderValue={(items) => {
+                          return items.map((currency: any) => (
+                            <div
+                              key={defaultCurrency}
+                              className="flex items-center gap-2"
+                            >
+                              <Avatar
+                                alt={currency.data.value}
+                                className="w-6 h-6"
+                                src={currency.data.flagSrc}
+                              />
+                              <div className="flex flex-col">
+                                <span>{currency.data.value}</span>
+                              </div>
+                            </div>
+                          ));
+                        }}
                       >
-                        <SelectItem
-                          key="CZK"
-                          value={"CZK"}
-                          startContent={
-                            <Avatar
-                              alt="CZ"
-                              className="w-6 h-6"
-                              src="https://flagcdn.com/cz.svg"
-                            />
-                          }
-                        >
-                          CZK
-                        </SelectItem>
-                        <SelectItem
-                          key="EUR"
-                          value={"EUR"}
-                          startContent={
-                            <Avatar
-                              alt="USA"
-                              className="w-6 h-6"
-                              src="https://flagcdn.com/eu.svg"
-                            />
-                          }
-                        >
-                          EUR
-                        </SelectItem>
-                        <SelectItem
-                          key="USD"
-                          value={"USD"}
-                          startContent={
-                            <Avatar
-                              alt="USA"
-                              className="w-6 h-6"
-                              src="https://flagcdn.com/us.svg"
-                            />
-                          }
-                        >
-                          USD
-                        </SelectItem>
+                        {(currency) => (
+                          <SelectItem
+                            key={currency.value}
+                            value={currency.value}
+                            startContent={
+                              <Avatar
+                                alt={currency.value}
+                                className="w-6 h-6"
+                                src={currency.flagSrc}
+                              />
+                            }
+                          >
+                            {currency.value}
+                          </SelectItem>
+                        )}
                       </Select>
                     </div>
                     <Textarea label="Notes" name="notes" />
@@ -146,7 +154,7 @@ export default function NewAccount({ platforms }: { platforms: any[] }) {
                     type="submit"
                     startContent={<IconPlus size={"18"} />}
                   >
-                    Add new account
+                    Create account
                   </Button>
                 </ModalFooter>
               </form>

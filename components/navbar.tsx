@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import {
@@ -20,8 +21,12 @@ import { GithubIcon, HeartFilledIcon } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 
 import { Logo } from "@/components/icons";
+import { IconChartPie } from "@tabler/icons-react";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
+  const isInApp = usePathname().startsWith("/app");
+
   return (
     <NextUINavbar maxWidth="xl" position="sticky" isBordered>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -31,22 +36,24 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">Wealthfolio</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-        </ul>
+        {isInApp && (
+          <ul className="hidden lg:flex gap-4 justify-start ml-2">
+            {siteConfig.navItems.map((item) => (
+              <NavbarItem key={item.href}>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  )}
+                  color="foreground"
+                  href={item.href}
+                >
+                  {item.label}
+                </NextLink>
+              </NavbarItem>
+            ))}
+          </ul>
+        )}
       </NavbarContent>
 
       <NavbarContent
@@ -73,7 +80,9 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
           <NextLink href="/app/assets">
-            <Button color="primary">My Portfolio</Button>
+            <Button color="primary" startContent={<IconChartPie />}>
+              My Portfolio
+            </Button>
           </NextLink>
         </NavbarItem>
       </NavbarContent>

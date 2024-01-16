@@ -1,15 +1,29 @@
 "use server";
 
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { Currency } from "@/types";
+import { Database } from "@/types/supabase";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function updateAsset(
   symbol: string,
   quantity: number,
-  currency: string,
-  unit_price: number,
+  currency: Currency,
+  unit_price?: number,
 ) {
-  const supabase = createServerActionClient({ cookies });
+  const cookieStore = cookies();
+
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    },
+  );
 
   const { data: existingAsset, error: existingAssetError } = await supabase
     .from("assets")
@@ -41,8 +55,8 @@ export async function updateAsset(
         purchase_price: calculateAveragePrice(
           existingAsset.quantity,
           existingAsset.purchase_price,
-          quantity,
-          unit_price,
+          quantity || existingAsset.purchase_price,
+          unit_price || existingAsset.purchase_price,
         ),
       })
       .eq("id", existingAsset.id);
@@ -53,7 +67,7 @@ export async function updateAsset(
     return transactions;
   }
 
-  const { data: newAsset, error: newAssetError } = await supabase
+  const { error: newAssetError } = await supabase
     .from("assets")
     .insert([{ symbol, quantity, currency, purchase_price: unit_price }]);
   if (newAssetError) {

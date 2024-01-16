@@ -14,27 +14,49 @@ import {
   IconPencil,
   IconTrash,
 } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteTransaction } from "../_functions/deleteTransaction";
+import { deleteTransaction } from "../_functions/stocks/deleteTransaction";
 
-export default function EditButtons({ row = {} }: { row: any }) {
+export default function EditButtons({
+  row = {},
+  list,
+}: {
+  row: any;
+  list: any;
+}) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const editTransaction = (transactionId: number) => {
     console.log("edit transaction " + transactionId);
   };
 
-  const router = useRouter();
-
-  const onDeleteTransaction = async (transactionId: number) => {
+  const onDeleteTransaction = async (row: any) => {
+    const {
+      id,
+      stock_id: {
+        account_id: { id: account_id },
+        currency,
+      },
+      type,
+      quantity,
+      unit_price,
+      fee,
+    } = row;
     try {
-      await deleteTransaction(transactionId);
+      await deleteTransaction(
+        id,
+        account_id,
+        currency,
+        type,
+        quantity,
+        unit_price,
+        fee,
+      );
     } catch (error) {
       console.error(error);
     } finally {
       setIsPopoverOpen(!isPopoverOpen);
-      router.refresh();
+      list.remove(id);
     }
   };
 
@@ -46,7 +68,7 @@ export default function EditButtons({ row = {} }: { row: any }) {
     <Popover
       placement="bottom"
       isOpen={isPopoverOpen}
-      onOpenChange={(isPopoverOpen) => setIsPopoverOpen(isPopoverOpen)}
+      onOpenChange={(isPopoverOpen: any) => setIsPopoverOpen(isPopoverOpen)}
     >
       <PopoverTrigger>
         <Button
@@ -71,7 +93,7 @@ export default function EditButtons({ row = {} }: { row: any }) {
             key="edit"
             isDisabled
             startContent={<IconPencil />}
-            onPress={(e) => {
+            onPress={() => {
               editTransaction(row.id);
             }}
           >
@@ -82,7 +104,7 @@ export default function EditButtons({ row = {} }: { row: any }) {
             startContent={<IconTrash />}
             color="danger"
             onPress={() => {
-              onDeleteTransaction(row.id);
+              onDeleteTransaction(row);
             }}
           >
             Delete transaction

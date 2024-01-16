@@ -1,14 +1,28 @@
 "use server";
 
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { getCurrentPrice } from "./getCurrentPrice";
 
 export async function getAssetMarketData() {
-  const supabase = createServerActionClient({ cookies });
-  const { data: assets, error } = await supabase
-    .from("assets")
-    .select("id, symbol, currency, purchase_price, quantity");
+  const cookieStore = cookies();
+
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    },
+  );
+
+  const { data: stocks, error } = await supabase
+    .from("stocks")
+    .select("id, symbol, currency, purchase_price, quantity")
+    .order("symbol", { ascending: true });
 
   if (error) {
     throw error;
@@ -28,21 +42,22 @@ export async function getAssetMarketData() {
     return Number(performance);
   };
 
-  const assetsWithMarketDatas: any[] = await Promise.all(
-    assets!.map(async (asset: any) => {
-      const currentPrice = await getCurrentPrice({ symbol: asset.symbol });
-      return {
-        ...asset,
-        currentPrice: currentPrice,
-        perfomancePercentage: getPerfomance(
-          currentPrice,
-          asset.purchase_price,
-          asset.quantity,
-        ),
-        currentValue: Number((currentPrice * asset.quantity).toFixed(2)),
-      };
-    }),
-  );
+  // let assetsWithMarketData: any[] = await Promise.all(
+  //   stocks!.map(async (asset: any) => {
+  //     const currentPrice = await getCurrentPrice({ symbol: asset.symbol });
+  //     return {
+  //       ...asset,
+  //       category: "stock",
+  //       currentPrice: currentPrice,
+  //       perfomancePercentage: getPerfomance(
+  //         currentPrice,
+  //         asset.purchase_price,
+  //         asset.quantity,
+  //       ),
+  //       currentValue: Number((currentPrice * asset.quantity).toFixed(2)),
+  //     };
+  //   }),
+  // );
 
   let assetsWithMarketData = [
     {
@@ -63,7 +78,7 @@ export async function getAssetMarketData() {
       currency: "USD",
       purchase_price: 100,
       quantity: 10,
-      currentPrice: 100,
+      currentPrice: 10,
       perfomancePercentage: 10,
       currentValue: 1000,
     },
@@ -94,6 +109,11 @@ export async function getAssetMarketData() {
   }
 
   assetsWithMarketData = calculatePortfolioShare();
-  console.log(assetsWithMarketData);
+
+  assetsWithMarketData = assetsWithMarketData.map((asset) => ({
+    ...asset,
+    profit: (asset.currentPrice - asset.purchase_price) * asset.quantity,
+  }));
+
   return assetsWithMarketData as any[];
 }

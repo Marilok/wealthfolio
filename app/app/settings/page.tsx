@@ -1,6 +1,7 @@
 "use client";
 
 import { subtitle, title } from "@/components/primitives";
+import { Database } from "@/types/supabase";
 import {
   Avatar,
   Button,
@@ -41,7 +42,7 @@ export default function Page() {
     },
   ];
 
-  const supabase = createBrowserClient(
+  const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );

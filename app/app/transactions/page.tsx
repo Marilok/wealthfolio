@@ -1,11 +1,11 @@
-import { getAccounts } from "../../../functions/getAccounts";
+import { getAccounts } from "@/functions/getAccounts";
 import UI from "./_components/ui";
-import { getTransactions } from "./_functions/getTransactions";
+import { getStocksTransactions } from "./_functions/stocks/getStocksTransactions";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const accounts = await getAccounts();
-  const transactions = await getTransactions();
-  return <UI accounts={accounts} transactions={transactions} />;
+  const stocks = await getStocksTransactions();
+  return <UI accounts={accounts} stocks={stocks} />;
 }

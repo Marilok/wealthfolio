@@ -2,19 +2,24 @@
 
 import { subtitle, title } from "@/components/primitives";
 import { formatMonetaryValue } from "@/functions";
-import { AssetWithMarketData } from "@/types";
+import { Currency } from "@/types";
 import {
+  Avatar,
   Card,
   CardBody,
   CardHeader,
+  Spinner,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  getKeyValue,
 } from "@nextui-org/react";
+import { useAsyncList } from "@react-stately/data";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+import { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
 export default function UI({ assets }: { assets: any[] }) {
@@ -23,7 +28,17 @@ export default function UI({ assets }: { assets: any[] }) {
       <span
         className={percent.startsWith("-") ? "text-danger" : "text-success"}
       >
-        {percent}
+        {percent.startsWith("-") ? "- " : "+ "}
+        {percent.startsWith("-") ? percent.slice(1) : percent}
+      </span>
+    );
+  };
+
+  const styledProfit = (profit: number, currency: Currency) => {
+    return (
+      <span className={profit < 0 ? "text-danger" : "text-success"}>
+        {profit < 0 ? "- " : "+ "}
+        {formatMonetaryValue(profit < 0 ? -profit : profit, currency)}
       </span>
     );
   };
@@ -43,6 +58,23 @@ export default function UI({ assets }: { assets: any[] }) {
         data: assets.map((asset) => asset.portfolioShare),
       },
     ],
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        labels: {
+          boxWidth: 10,
+          boxHeight: 10,
+          padding: 10,
+        },
+        label: {
+          font: {
+            size: 20,
+          },
+        },
+      },
+    },
   };
 
   const calculateAssetsByCategory = () => {
@@ -115,9 +147,51 @@ export default function UI({ assets }: { assets: any[] }) {
     ],
   };
 
+  const tableColumns = [
+    { name: "Symbol", descriptor: "symbol" },
+    { name: "Value", descriptor: "value" },
+    { name: "Share", descriptor: "portfolioShare" },
+    { name: "Perfomance", descriptor: "perfomancePercentage" },
+    { name: "Profit", descriptor: "profit" },
+  ];
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  let list = useAsyncList({
+    async load({ signal }) {
+      setIsLoading(false);
+
+      return {
+        items: assets,
+      };
+    },
+    async sort({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a: any, b: any) => {
+          //@ts-expect-error
+          let first = a[sortDescriptor.column];
+          //@ts-expect-error
+          let second = b[sortDescriptor.column];
+          let cmp =
+            (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+
+          if (sortDescriptor.direction === "descending") {
+            cmp *= -1;
+          }
+
+          return cmp;
+        }),
+      };
+    },
+  });
+
+  const calculateTotalStocks = () => {
+    return assets.reduce((a, b) => a + b.currentValue, 0);
+  };
+
   return (
     <>
-      <h1 className={title()}>Assets</h1>
+      <h1 className={title()}>My assets</h1>
       <div className="w-full">
         <h2 className={subtitle()}>Allocation analysis</h2>
 
@@ -125,17 +199,21 @@ export default function UI({ assets }: { assets: any[] }) {
           <Card className="p-5 flex-1">
             <CardHeader>
               <h2 className={"font-semibold text-xl text-center w-full"}>
-                Asset
+                Individual assets
               </h2>
             </CardHeader>
             <CardBody>
-              <Doughnut data={dataAssets} className="mx-auto" />
+              <Doughnut
+                data={dataAssets}
+                className="mx-auto"
+                options={options}
+              />
             </CardBody>
           </Card>
           <Card className="p-5 flex-1">
             <CardHeader>
               <h2 className={"font-semibold text-xl text-center w-full"}>
-                Category
+                Asset category
               </h2>
             </CardHeader>
             <CardBody>
@@ -145,41 +223,79 @@ export default function UI({ assets }: { assets: any[] }) {
           <Card className="p-5 flex-1">
             <CardHeader>
               <h2 className={"font-semibold text-xl text-center w-full"}>
-                Currency
+                Platforms
               </h2>
             </CardHeader>
             <CardBody>
-              <Doughnut data={dataCurrency} className="mx-auto" />
+              <Doughnut data={dataCategory} className="mx-auto" />
             </CardBody>
           </Card>
         </div>
       </div>
       <div className="w-full">
-        <h2 className={subtitle()}>Overview of all assets</h2>
-        <Table selectionMode="single" isStriped color="primary">
+        <h2 className={subtitle()}>Overview of all my stocks</h2>
+        <Table
+          aria-label="Table of stocks"
+          selectionMode="single"
+          isStriped
+          color="primary"
+          sortDescriptor={list.sortDescriptor}
+          onSortChange={list.sort}
+        >
           <TableHeader>
-            <TableColumn>ASSET IDENTIFIER</TableColumn>
-            <TableColumn>VALUE</TableColumn>
-            <TableColumn>ALLOCATION</TableColumn>
-            <TableColumn>PERFORMANCE</TableColumn>
+            {tableColumns.map(({ name, descriptor }) => (
+              <TableColumn
+                key={descriptor || name}
+                allowsSorting={!!descriptor}
+              >
+                {name}
+              </TableColumn>
+            ))}
           </TableHeader>
           <TableBody
             emptyContent={
               "No assets to display. Try adding some transactions! 😉"
             }
+            items={list.items}
+            isLoading={isLoading}
+            loadingContent={<Spinner label="Loading..." />}
           >
-            {assets.map((row: AssetWithMarketData, index: any) => (
-              <TableRow key={index}>
-                <TableCell className="font-semibold">{row.symbol}</TableCell>
-                <TableCell>
-                  {formatMonetaryValue(row.currentValue, row.currency)}
+            {(stock: any) => (
+              <TableRow key={getKeyValue(stock, "symbol")}>
+                <TableCell className="font-semibold flex flex-row justify-start items-center gap-3">
+                  <Avatar
+                    src={`${process.env.NEXT_PUBLIC_URL}/images/stocks/${stock.symbol}.svg`}
+                    radius="sm"
+                    className="bg-transparent"
+                    size="sm"
+                  />
+                  <span>{getKeyValue(stock, "symbol")}</span>
                 </TableCell>
-                <TableCell>{row.portfolioShare} %</TableCell>
                 <TableCell>
-                  {styledPercent(row.perfomancePercentage.toString() + " %")}
+                  {formatMonetaryValue(
+                    getKeyValue(stock, "currentValue"),
+                    getKeyValue(stock, "currency"),
+                  )}
+                </TableCell>
+                <TableCell>
+                  <p>{getKeyValue(stock, "portfolioShare")} %</p>
+                </TableCell>
+                <TableCell>
+                  {styledPercent(
+                    getKeyValue(stock, "perfomancePercentage").toString() +
+                      " %",
+                  )}
+                </TableCell>
+                <TableCell>
+                  <span>
+                    {styledProfit(
+                      getKeyValue(stock, "profit"),
+                      getKeyValue(stock, "currency"),
+                    )}
+                  </span>
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

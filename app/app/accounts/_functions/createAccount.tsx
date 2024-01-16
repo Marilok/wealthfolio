@@ -1,16 +1,31 @@
 "use server";
 
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { Currency } from "@/types";
+import { Database } from "@/types/supabase";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createDeposit } from "./createDeposit";
 
 export async function createAccount(
   name: string,
   platform_id: number,
   balance: number,
-  currency: string,
+  currency: Currency,
   notes?: string,
 ) {
-  const supabase = createServerActionClient({ cookies });
+  const cookieStore = cookies();
+
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    },
+  );
 
   const { data: account, error } = await supabase
     .from("accounts")
@@ -24,11 +39,15 @@ export async function createAccount(
 
   const account_id = account!.id;
 
-  const { error: error2 } = await supabase
-    .from("account_balances")
-    .insert([{ currency: currency, account_id: account_id, balance: balance }]);
-
-  if (error2) {
-    throw error2;
+  try {
+    await createDeposit(
+      account_id,
+      "deposit",
+      balance,
+      currency,
+      "Initial deposit",
+    );
+  } catch (error) {
+    throw error;
   }
 }

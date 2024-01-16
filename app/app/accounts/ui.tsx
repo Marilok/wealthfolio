@@ -1,94 +1,107 @@
 "use client";
+
 import { title } from "@/components/primitives";
+import { currencies } from "@/data/currencies";
 import { formatMonetaryValue } from "@/functions";
-import {
-  Avatar,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
-import EditButtons from "./components/EditButtons";
+import { getAccounts } from "@/functions/getAccounts";
+import { Currency } from "@/types";
+import { Avatar, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { useAsyncList } from "@react-stately/data";
+import { useState } from "react";
+import AccountsTable from "./components/AccountsTable";
 import NewAccount from "./components/NewAccount";
 
-export default function UI({
-  accounts,
-  platforms,
-}: {
-  accounts: any[];
-  platforms: any[];
-}) {
+export default function UI({ platforms }: { platforms: any[] }) {
+  const [isLoading, setIsLoading] = useState(false);
+  let list = useAsyncList({
+    async load({ signal }) {
+      const accounts = await getAccounts();
+
+      return {
+        items: accounts,
+      };
+    },
+    //TODO: rewrite this to use server-side sorting
+    async sort({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a: any, b: any) => {
+          //@ts-expect-error
+          let first = a[sortDescriptor.column];
+          //@ts-expect-error
+          let second = b[sortDescriptor.column];
+          let cmp =
+            (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+
+          if (sortDescriptor.direction === "descending") {
+            cmp *= -1;
+          }
+
+          return cmp;
+        }),
+      };
+    },
+  });
+
   return (
     <>
       <h1 className={title()}>Accounts</h1>
-      <NewAccount platforms={platforms} />
-      <Table selectionMode="single" isStriped color="primary">
-        <TableHeader>
-          <TableColumn>ACCOUNT NICKNAME</TableColumn>
-          <TableColumn>PLATFORM</TableColumn>
-          <TableColumn>TRANSACTIONS</TableColumn>
-          <TableColumn>CASH BALANCE</TableColumn>
-          <TableColumn>NOTES</TableColumn>
-          <TableColumn> </TableColumn>
-        </TableHeader>
-        <TableBody emptyContent={"No accounts to display. Try adding one! 😉"}>
-          {accounts.map((row, index) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>
-                {row.platform_id ? (
-                  <div className="flex flex-row gap-2">
-                    <Avatar
-                      src={`${process.env.NEXT_PUBLIC_URL}/images/platforms/${row.platform_id.icon}`}
-                      alt={row.platform_id?.name}
-                      size="sm"
-                      radius="sm"
-                      classNames={{
-                        img: "object-contain",
-                      }}
-                    />
-                    <Link
-                      isExternal
-                      href={row.platform_id?.url}
-                      showAnchorIcon
-                      underline="always"
-                      color="foreground"
-                    >
-                      {row.platform_id?.name}
-                    </Link>
-                  </div>
-                ) : (
-                  ""
-                )}
-              </TableCell>
-              <TableCell>{row.transactions[0].count}</TableCell>
-              <TableCell>
-                {row.account_balances?.map((balance: any) => {
-                  return (
-                    <>
-                      <span key={balance.id}>
-                        {formatMonetaryValue(balance.balance, balance.currency)}
-                      </span>
-                      <br />
-                    </>
-                  );
-                })}
-              </TableCell>
-              <TableCell>{row.notes}</TableCell>
-              <TableCell>
-                <EditButtons
-                  accountId={row.id}
-                  accountName={row.name}
-                  transactionsCount={row.transactions[0].count}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <NewAccount platforms={platforms} list={list} />
+      <AccountsTable
+        list={list}
+        platforms={platforms}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+      />
+      <Card className="w-auto px-4 py-2 mr-auto">
+        <CardHeader className="uppercase font-bold text-lg">
+          <h2>Cash balances</h2>
+        </CardHeader>
+        <CardBody className="flex flex-row gap-8">
+          <AggregatedBalances {...list} />
+        </CardBody>
+      </Card>
     </>
   );
 }
+
+const AggregatedBalances = (list: any) => {
+  const balanceMap: { [currency: string]: number } = {};
+
+  list.items?.forEach((account: any) => {
+    account.account_balances?.forEach((balance: any) => {
+      const { currency, balance: balanceValue } = balance;
+      if (balanceMap[currency]) {
+        balanceMap[currency] += balanceValue;
+      } else {
+        balanceMap[currency] = balanceValue;
+      }
+    });
+  });
+
+  const getCurrencyFlag = (currency: Currency, currencies: any) => {
+    const item = currencies.find((item: any) => item.value === currency);
+    return item?.flagSrc;
+  };
+
+  const aggregatedBalances = Object.entries(balanceMap).map(
+    ([currency, balance]) => (
+      <div key={currency} className="flex flex-row gap-2">
+        <Avatar
+          /* @ts-expect-error */
+          src={getCurrencyFlag(currency, currencies)}
+          className="h-6 w-6"
+        />
+        <p className="text-right ml-auto">
+          {/* @ts-expect-error */}
+          {formatMonetaryValue(balance, currency)}
+        </p>
+      </div>
+    ),
+  );
+
+  return (
+    <div className="flex flex-col gap-2 ml-auto text-right">
+      {aggregatedBalances}
+    </div>
+  );
+};
