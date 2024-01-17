@@ -1,10 +1,11 @@
 "use server";
 
+import { Account } from "@/types";
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export async function deleteAccount(id: number) {
+export async function deleteAccount(id: Account["id"]) {
   const cookieStore = cookies();
 
   const supabase = createServerClient<Database>(
@@ -23,4 +24,16 @@ export async function deleteAccount(id: number) {
   if (error) {
     throw error;
   }
+
+  const { error: error2 } = await supabase
+    .from("account_transfers")
+    .delete()
+    .eq("from", id)
+    .eq("to", "");
+
+  const { error: error3 } = await supabase
+    .from("account_transfers")
+    .delete()
+    .eq("to", id)
+    .eq("from", "");
 }

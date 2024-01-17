@@ -1,14 +1,15 @@
 "use server";
 
+import { Account, Platform } from "@/types";
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function updateAccount(
-  accountId: number,
-  name: string,
-  platform_id: number,
-  notes?: string,
+  accountId: Account["id"],
+  name: Account["name"],
+  platform_id: Platform["id"],
+  notes?: Account["notes"],
 ) {
   const cookieStore = cookies();
 

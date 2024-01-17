@@ -1,17 +1,17 @@
 "use server";
 
-import { Currency } from "@/types";
+import { Account, Currency, Platform } from "@/types";
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { createDeposit } from "./createDeposit";
 
 export async function createAccount(
-  name: string,
-  platform_id: number,
+  name: Account["name"],
+  platform_id: Platform["id"],
   balance: number,
   currency: Currency,
-  notes?: string,
+  notes?: Account["notes"],
 ) {
   const cookieStore = cookies();
 
