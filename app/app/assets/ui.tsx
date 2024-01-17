@@ -19,6 +19,7 @@ import {
 } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
@@ -43,7 +44,7 @@ export default function UI({ assets }: { assets: any[] }) {
     );
   };
 
-  ChartJS.register(ArcElement, Tooltip, Legend);
+  ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
   const dataAssets = {
     labels: [...assets.map((asset) => asset.symbol)],
@@ -55,6 +56,10 @@ export default function UI({ assets }: { assets: any[] }) {
           "rgba(54, 162, 235, 0.5)",
           "rgba(255, 206, 86, 0.5)",
         ],
+        datalabels: {
+          anchor: "end",
+          align: "end",
+        },
         data: assets.map((asset) => asset.portfolioShare),
       },
     ],
@@ -63,15 +68,28 @@ export default function UI({ assets }: { assets: any[] }) {
   const options = {
     plugins: {
       legend: {
-        labels: {
-          boxWidth: 10,
-          boxHeight: 10,
-          padding: 10,
-        },
-        label: {
-          font: {
-            size: 20,
+        display: false,
+      },
+      tooltip: {
+        usePointStyle: false,
+        callbacks: {
+          label: function (context: any) {
+            let label = context.label || "";
+
+            return ` ${context.parsed} % of portfolio`;
           },
+        },
+      },
+      datalabels: {
+        color: function (context: any) {
+          return context.dataset.backgroundColor;
+        },
+        font: {
+          size: 16,
+          weight: "bold",
+        },
+        formatter: function (value: any, context: any) {
+          return context.chart.data.labels[context.dataIndex];
         },
       },
     },
@@ -193,8 +211,6 @@ export default function UI({ assets }: { assets: any[] }) {
     <>
       <h1 className={title()}>My assets</h1>
       <div className="w-full">
-        <h2 className={subtitle()}>Allocation analysis</h2>
-
         <div className="flex flex-row gap-6 flex-wrap">
           <Card className="p-5 flex-1">
             <CardHeader>
@@ -208,26 +224,6 @@ export default function UI({ assets }: { assets: any[] }) {
                 className="mx-auto"
                 options={options}
               />
-            </CardBody>
-          </Card>
-          <Card className="p-5 flex-1">
-            <CardHeader>
-              <h2 className={"font-semibold text-xl text-center w-full"}>
-                Asset category
-              </h2>
-            </CardHeader>
-            <CardBody>
-              <Doughnut data={dataCategory} className="mx-auto" />
-            </CardBody>
-          </Card>
-          <Card className="p-5 flex-1">
-            <CardHeader>
-              <h2 className={"font-semibold text-xl text-center w-full"}>
-                Platforms
-              </h2>
-            </CardHeader>
-            <CardBody>
-              <Doughnut data={dataCategory} className="mx-auto" />
             </CardBody>
           </Card>
         </div>
