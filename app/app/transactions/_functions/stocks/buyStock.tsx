@@ -1,6 +1,6 @@
 "use server";
 
-import { Currency } from "@/types";
+import { Account, Currency, Stock } from "@/types";
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -9,15 +9,15 @@ import { updateAccountBalance } from "../updateAccountBalance";
 import { insertTransaction } from "./insertTransaction";
 
 export async function buyStock(
-  symbol: string,
+  symbol: Stock["symbol"],
   type: string,
   quantity: number,
   unit_price: number,
   fee: number,
   currency: Currency,
   date: string,
-  account_id: number,
-  notes?: string,
+  account_id: Account["id"],
+  notes?: Stock["notes"],
 ) {
   const cookieStore = cookies();
 

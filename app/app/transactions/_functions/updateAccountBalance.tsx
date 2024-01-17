@@ -1,12 +1,12 @@
 "use server";
 
-import { Currency } from "@/types";
+import { Account, Currency } from "@/types";
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function updateAccountBalance(
-  account_id: number,
+  account_id: Account["id"],
   currency: Currency,
   amount: number,
 ) {
