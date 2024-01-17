@@ -3,6 +3,7 @@
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getCurrentPrice } from "./getCurrentPrice";
 
 export async function getAssetMarketData() {
   const cookieStore = cookies();
@@ -42,58 +43,58 @@ export async function getAssetMarketData() {
     return Number(performance);
   };
 
-  // let assetsWithMarketData: any[] = await Promise.all(
-  //   stocks!.map(async (asset: any) => {
-  //     const currentPrice = await getCurrentPrice({ symbol: asset.symbol });
-  //     return {
-  //       ...asset,
-  //       category: "stock",
-  //       currentPrice: currentPrice,
-  //       perfomancePercentage: getPerfomance(
-  //         currentPrice,
-  //         asset.purchase_price,
-  //         asset.quantity,
-  //       ),
-  //       currentValue: Number((currentPrice * asset.quantity).toFixed(2)),
-  //     };
-  //   }),
-  // );
+  let assetsWithMarketData: any[] = await Promise.all(
+    stocks!.map(async (asset: any) => {
+      const currentPrice = await getCurrentPrice({ symbol: asset.symbol });
+      return {
+        ...asset,
+        category: "stock",
+        currentPrice: currentPrice,
+        perfomancePercentage: getPerfomance(
+          currentPrice,
+          asset.purchase_price,
+          asset.quantity,
+        ),
+        currentValue: Number((currentPrice * asset.quantity).toFixed(2)),
+      };
+    }),
+  );
 
-  let assetsWithMarketData = [
-    {
-      id: 1,
-      symbol: "AAPL",
-      category: "stock",
-      currency: "USD",
-      purchase_price: 100,
-      quantity: 10,
-      currentPrice: 100,
-      perfomancePercentage: -5.8,
-      currentValue: 1000,
-    },
-    {
-      id: 2,
-      symbol: "TSLA",
-      category: "stock",
-      currency: "USD",
-      purchase_price: 100,
-      quantity: 10,
-      currentPrice: 10,
-      perfomancePercentage: 10,
-      currentValue: 1000,
-    },
-    {
-      id: 3,
-      symbol: "BTC",
-      category: "crypto",
-      currency: "USD",
-      purchase_price: 100,
-      quantity: 10,
-      currentPrice: 400,
-      perfomancePercentage: 14,
-      currentValue: 4000,
-    },
-  ];
+  // let assetsWithMarketData = [
+  //   {
+  //     id: 1,
+  //     symbol: "AAPL",
+  //     category: "stock",
+  //     currency: "USD",
+  //     purchase_price: 100,
+  //     quantity: 10,
+  //     currentPrice: 100,
+  //     perfomancePercentage: -5.8,
+  //     currentValue: 1000,
+  //   },
+  //   {
+  //     id: 2,
+  //     symbol: "TSLA",
+  //     category: "stock",
+  //     currency: "USD",
+  //     purchase_price: 100,
+  //     quantity: 10,
+  //     currentPrice: 10,
+  //     perfomancePercentage: 10,
+  //     currentValue: 1000,
+  //   },
+  //   {
+  //     id: 3,
+  //     symbol: "BTC",
+  //     category: "crypto",
+  //     currency: "USD",
+  //     purchase_price: 100,
+  //     quantity: 10,
+  //     currentPrice: 400,
+  //     perfomancePercentage: 14,
+  //     currentValue: 4000,
+  //   },
+  // ];
 
   function calculatePortfolioShare() {
     const totalValue = assetsWithMarketData.reduce(
