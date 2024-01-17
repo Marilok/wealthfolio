@@ -2,7 +2,6 @@ import { GithubIcon } from "@/components/icons";
 import { subtitle, title } from "@/components/primitives";
 import { siteConfig } from "@/config/site";
 import { Database } from "@/types/supabase";
-import { Link } from "@nextui-org/link";
 import {
   Avatar,
   Button,
@@ -11,8 +10,9 @@ import {
   CardFooter,
   CardHeader,
   Divider,
+  Link,
+  button as buttonStyles,
 } from "@nextui-org/react";
-import { button as buttonStyles } from "@nextui-org/theme";
 import { createServerClient } from "@supabase/ssr";
 import { IconCheck, IconRocket, IconX } from "@tabler/icons-react";
 import { cookies } from "next/headers";

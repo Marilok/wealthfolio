@@ -2,7 +2,7 @@
 
 import { title } from "@/components/primitives";
 import { Database } from "@/types/supabase";
-import { Button } from "@nextui-org/button";
+import { Button } from "@nextui-org/react";
 import { createBrowserClient } from "@supabase/ssr";
 import { IconBrandGithub } from "@tabler/icons-react";
 

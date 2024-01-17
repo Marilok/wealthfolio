@@ -139,7 +139,7 @@ export default function EditButtons({
     } catch (error) {
       console.error(error);
     } finally {
-      await list.reload();
+      list.reload();
       onCloseTransfer();
     }
   }

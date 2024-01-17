@@ -1,7 +1,7 @@
 "use client";
-import { Button } from "@nextui-org/button";
-import { Link } from "@nextui-org/link";
 import {
+  Button,
+  Link,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
@@ -9,9 +9,9 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Navbar as NextUINavbar,
-} from "@nextui-org/navbar";
+} from "@nextui-org/react";
 
-import { link as linkStyles } from "@nextui-org/theme";
+import { link as linkStyles } from "@nextui-org/react";
 
 import { siteConfig } from "@/config/site";
 import clsx from "clsx";

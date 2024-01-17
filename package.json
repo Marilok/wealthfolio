@@ -1,5 +1,5 @@
 {
-  "name": "next-app-template",
+  "name": "wealthfolio",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -9,25 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/button": "2.0.26",
-    "@nextui-org/code": "2.0.24",
-    "@nextui-org/input": "2.1.16",
-    "@nextui-org/kbd": "2.0.25",
-    "@nextui-org/link": "2.0.26",
-    "@nextui-org/navbar": "2.0.27",
     "@nextui-org/react": "^2.2.9",
-    "@nextui-org/snippet": "2.0.30",
-    "@nextui-org/switch": "2.0.25",
-    "@nextui-org/system": "2.0.15",
-    "@nextui-org/theme": "2.1.17",
     "@react-aria/ssr": "^3.8.0",
     "@react-aria/visually-hidden": "^3.8.6",
     "@react-stately/data": "^3.11.0",
-    "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.1",
     "@tabler/icons-react": "^2.44.0",
-    "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.16",
     "chart.js": "^4.4.1",
     "clsx": "^2.0.0",
@@ -48,6 +36,7 @@
   "devDependencies": {
     "@types/node": "20.10.6",
     "@types/react": "18.2.46",
+    "@types/react-dom": "^18.2.18",
     "eslint-config-prettier": "^9.1.0",
     "typescript": "5.3.3"
   }
