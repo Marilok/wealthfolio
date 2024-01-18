@@ -1,10 +1,10 @@
 "use client";
 
-import { title } from "@/components/primitives";
+import { GithubIcon } from "@/components/icons";
+import { siteConfig } from "@/config/site";
 import { Database } from "@/types/supabase";
-import { Button } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { createBrowserClient } from "@supabase/ssr";
-import { IconBrandGithub } from "@tabler/icons-react";
 
 export default function Page() {
   const supabase = createBrowserClient<Database>(
@@ -13,25 +13,37 @@ export default function Page() {
   );
 
   const onGithubLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
         redirectTo: `${process.env.NEXT_PUBLIC_URL}/auth/callback`,
       },
     });
+    if (error) {
+      console.error(error);
+      return;
+    }
   };
   return (
     <>
-      <h1 className={title()}>Login</h1>
-      <Button
-        startContent={<IconBrandGithub />}
-        color="default"
-        onClick={async () => {
-          await onGithubLogin();
-        }}
-      >
-        Login with GitHub
-      </Button>
+      <Card className="m-auto p-unit-md max-w-lg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <CardHeader className="w-full ">
+          <h1 className={"font-bold text-2xl text-center w-full"}>
+            Welcome to {siteConfig.name}
+          </h1>
+        </CardHeader>
+        <CardBody>
+          <Button
+            startContent={<GithubIcon />}
+            className="bg-black text-white"
+            onClick={async () => {
+              await onGithubLogin();
+            }}
+          >
+            Access with GitHub
+          </Button>
+        </CardBody>
+      </Card>
     </>
   );
 }
