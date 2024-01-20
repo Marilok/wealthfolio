@@ -14,6 +14,7 @@ import {
   IconPencil,
   IconTrash,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteTransaction } from "../_functions/stocks/deleteTransaction";
 
@@ -29,6 +30,8 @@ export default function EditButtons({
   const editTransaction = (transactionId: number) => {
     console.log("edit transaction " + transactionId);
   };
+
+  const router = useRouter();
 
   const onDeleteTransaction = async (row: any) => {
     const {
@@ -57,6 +60,7 @@ export default function EditButtons({
     } finally {
       setIsPopoverOpen(!isPopoverOpen);
       list.remove(id);
+      router.refresh();
     }
   };
 

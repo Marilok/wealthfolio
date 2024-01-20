@@ -44,6 +44,7 @@ export default function NewAccount({
     } finally {
       list.reload();
       onClose();
+      router.refresh();
     }
   }
 
@@ -106,7 +107,7 @@ export default function NewAccount({
                         defaultSelectedKeys={[defaultCurrency]}
                         name="currency"
                         items={currencies}
-                        renderValue={(items) => {
+                        renderValue={(items: any) => {
                           return items.map((currency: any) => (
                             <div
                               key={defaultCurrency}

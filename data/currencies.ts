@@ -1,4 +1,6 @@
-export const currencies = [
+import { CurrencyWithFlag } from "@/types";
+
+export const currencies: CurrencyWithFlag[] = [
   {
     value: "CZK",
     flagSrc: "https://flagcdn.com/cz.svg",
