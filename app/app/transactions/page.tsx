@@ -10,11 +10,7 @@ export default async function Page() {
 
   return (
     <>
-      <UI
-        accounts={accounts}
-        stocks={stocks}
-        // exportTransactions={exportTransactions}
-      />
+      <UI accounts={accounts} stocks={stocks} />
     </>
   );
 }
