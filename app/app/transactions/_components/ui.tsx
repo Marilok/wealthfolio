@@ -28,7 +28,6 @@ export default function UI({
       return {
         items: items.sort((a: any, b: any) => {
           let first = a[sortDescriptor.column];
-          console.log(sortDescriptor.column);
           let second = b[sortDescriptor.column];
           let cmp =
             (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;

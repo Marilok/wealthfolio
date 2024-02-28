@@ -40,6 +40,5 @@ export async function convertCurrency(
 ) {
   const url = `https://api.freecurrencyapi.com/v1/latest?apikey=${process.env.NEXT_PUBLIC_CURRENCY_API_KEY}&currencies=${to}&base_currency=${from}`;
   const result: apiResponse = await fetch(url).then((res) => res.json());
-  console.log(result);
   return result.data[to] * amount;
 }

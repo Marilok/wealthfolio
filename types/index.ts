@@ -24,6 +24,11 @@ export interface Stock {
 
 export type Currency = "CZK" | "USD" | "EUR";
 
+export type CurrencyWithFlag = {
+  value: string;
+  flagSrc: string;
+};
+
 export interface AssetWithMarketData extends Asset {
   currentPrice: number;
   perfomancePercentage: number;

@@ -23,6 +23,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createDeposit } from "../../_functions/createDeposit";
 import { createTransfer } from "../../_functions/createTransfer";
@@ -75,6 +76,7 @@ export default function EditButtons({
   } = useDisclosure();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const router = useRouter();
 
   const onDeleteAccount = async (accountId: number) => {
     try {
@@ -83,6 +85,7 @@ export default function EditButtons({
       console.error(error);
     } finally {
       list.remove(accountId);
+      router.refresh();
     }
   };
 
@@ -109,6 +112,7 @@ export default function EditButtons({
       } finally {
         list.reload();
         onCloseDeposit();
+        router.refresh();
       }
     }
   };
@@ -125,6 +129,7 @@ export default function EditButtons({
     } finally {
       list.reload();
       onCloseEdit();
+      router.refresh();
     }
   }
 
@@ -141,6 +146,7 @@ export default function EditButtons({
     } finally {
       list.reload();
       onCloseTransfer();
+      router.refresh();
     }
   }
 

@@ -23,6 +23,7 @@ import {
   IconPlus,
   IconShoppingCart,
 } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { buyStock } from "../_functions/stocks/buyStock";
 
 const actions = [
@@ -53,6 +54,7 @@ export default function NewTransaction({
   accounts: Account[];
   list: any;
 }) {
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   async function createNewTransaction(formData: FormData) {
@@ -84,6 +86,7 @@ export default function NewTransaction({
     } finally {
       list.reload();
       onClose();
+      router.refresh();
     }
   }
 
