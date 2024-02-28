@@ -29,12 +29,7 @@ export default function TransferModal({
   accounts = accounts.filter((account: any) => account.id !== accountId);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-      backdrop="blur"
-      scrollBehavior="outside"
-    >
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
       <ModalContent>
         {(onClose) => (
           <>

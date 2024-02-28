@@ -16,7 +16,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconPlus } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 import { createAccount } from "../_functions/createAccount";
 
 export default function NewAccount({
@@ -27,8 +26,6 @@ export default function NewAccount({
   list: any;
 }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-  const router = useRouter();
 
   async function onSubmit(formData: FormData) {
     isOpen == false ? onOpen() : onOpenChange();
@@ -58,12 +55,7 @@ export default function NewAccount({
       >
         Create account
       </Button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        backdrop="blur"
-        scrollBehavior="outside"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
         <ModalContent>
           {(onClose) => (
             <>

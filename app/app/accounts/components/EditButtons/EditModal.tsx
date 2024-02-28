@@ -22,12 +22,7 @@ export default function EditModal({
 }: any) {
   const { name: accountName, notes, platform_id } = account;
   return (
-    <Modal
-      isOpen={isOpenEdit}
-      onOpenChange={onOpenChangeEdit}
-      backdrop="blur"
-      scrollBehavior="outside"
-    >
+    <Modal isOpen={isOpenEdit} onOpenChange={onOpenChangeEdit} backdrop="blur">
       <ModalContent>
         {(onClose) => (
           <>

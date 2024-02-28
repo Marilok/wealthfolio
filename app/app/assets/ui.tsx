@@ -1,6 +1,5 @@
 "use client";
 
-import { subtitle, title } from "@/components/primitives";
 import { formatMonetaryValue } from "@/functions";
 import { Currency } from "@/types";
 import {
@@ -168,7 +167,7 @@ export default function UI({ assets }: { assets: any[] }) {
   const tableColumns = [
     { name: "Symbol", descriptor: "symbol" },
     { name: "Value", descriptor: "value" },
-    { name: "Share", descriptor: "portfolioShare" },
+    { name: "Portfolio share", descriptor: "portfolioShare" },
     { name: "Perfomance", descriptor: "perfomancePercentage" },
     { name: "Profit", descriptor: "profit" },
   ];
@@ -209,7 +208,6 @@ export default function UI({ assets }: { assets: any[] }) {
 
   return (
     <>
-      <h1 className={title()}>My assets</h1>
       <div className="w-full">
         <div className="flex flex-row gap-6 flex-wrap">
           <Card className="p-5 flex-1">
@@ -229,7 +227,6 @@ export default function UI({ assets }: { assets: any[] }) {
         </div>
       </div>
       <div className="w-full">
-        <h2 className={subtitle()}>Overview of all my stocks</h2>
         <Table
           aria-label="Table of stocks"
           selectionMode="single"

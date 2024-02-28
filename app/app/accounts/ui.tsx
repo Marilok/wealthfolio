@@ -1,17 +1,23 @@
 "use client";
 
-import { title } from "@/components/primitives";
 import { currencies } from "@/data/currencies";
+import { defaultCurrency } from "@/data/settings";
 import { formatMonetaryValue } from "@/functions";
 import { getAccounts } from "@/functions/getAccounts";
 import { Currency } from "@/types";
-import { Avatar, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Avatar, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { useState } from "react";
 import AccountsTable from "./components/AccountsTable";
 import NewAccount from "./components/NewAccount";
 
-export default function UI({ platforms }: { platforms: any[] }) {
+export default function UI({
+  platforms,
+  totalValue,
+}: {
+  platforms: any[];
+  totalValue: number;
+}) {
   const [isLoading, setIsLoading] = useState(false);
   let list = useAsyncList({
     async load({ signal }) {
@@ -44,7 +50,6 @@ export default function UI({ platforms }: { platforms: any[] }) {
 
   return (
     <>
-      <h1 className={title()}>Accounts</h1>
       <NewAccount platforms={platforms} list={list} />
       <AccountsTable
         list={list}
@@ -52,19 +57,19 @@ export default function UI({ platforms }: { platforms: any[] }) {
         isLoading={isLoading}
         setIsLoading={setIsLoading}
       />
-      <Card className="w-auto px-4 py-2 mr-auto">
+      <Card className="w-60 px-4 py-2 mr-auto">
         <CardHeader className="uppercase font-bold text-lg">
           <h2>Cash balances</h2>
         </CardHeader>
         <CardBody className="flex flex-row gap-8">
-          <AggregatedBalances {...list} />
+          <AggregatedBalances list={list} totalValue={totalValue} />
         </CardBody>
       </Card>
     </>
   );
 }
 
-const AggregatedBalances = (list: any) => {
+const AggregatedBalances = ({ list, totalValue }: any) => {
   const balanceMap: { [currency: string]: number } = {};
 
   list.items?.forEach((account: any) => {
@@ -77,7 +82,6 @@ const AggregatedBalances = (list: any) => {
       }
     });
   });
-
   const getCurrencyFlag = (currency: Currency, currencies: any) => {
     const item = currencies.find((item: any) => item.value === currency);
     return item?.flagSrc;
@@ -85,7 +89,10 @@ const AggregatedBalances = (list: any) => {
 
   const aggregatedBalances = Object.entries(balanceMap).map(
     ([currency, balance]) => (
-      <div key={currency} className="flex flex-row gap-2">
+      <div
+        key={currency}
+        className="flex flex-row gap-2 justify-between w-full"
+      >
         <Avatar
           /* @ts-expect-error */
           src={getCurrencyFlag(currency, currencies)}
@@ -100,8 +107,19 @@ const AggregatedBalances = (list: any) => {
   );
 
   return (
-    <div className="flex flex-col gap-2 ml-auto text-right">
+    <div className="flex flex-col gap-2 text-right w-full">
       {aggregatedBalances}
+
+      <Divider className="my-2" />
+      <div className="flex flex-row gap-2 justify-between w-full">
+        <Avatar
+          src={getCurrencyFlag(defaultCurrency, currencies)}
+          className="h-6 w-6"
+        />
+        <p className="text-right ml-auto font-bold">
+          {formatMonetaryValue(totalValue, defaultCurrency)}
+        </p>
+      </div>
     </div>
   );
 };
